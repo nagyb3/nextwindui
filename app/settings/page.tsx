@@ -11,9 +11,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Navbar from "@/components/navbar";
+import { useAuthContext } from "@/components/auth-provider";
+import { useRouter } from "next/navigation";
 
 export default function page() {
   const { setTheme } = useTheme();
+
+  const authContext = useAuthContext();
+
+  const router = useRouter();
+
+  const handleLogout = () => {
+    authContext.setIsLoggedIn(false);
+    authContext.setUser(undefined);
+    authContext.setSession(undefined);
+    router.push("/");
+  };
 
   return (
     <div>
@@ -43,6 +56,7 @@ export default function page() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        <Button onClick={handleLogout}>Log out of your account!</Button>
       </div>
     </div>
   );

@@ -7,14 +7,14 @@ import { useAuthContext } from "./auth-provider";
 export default function navbar() {
   const router = useRouter();
 
-  const AuthContext = useAuthContext();
+  const authContext = useAuthContext();
 
   return (
     <nav className="h-[60px] border-b-neutral-600 border px-16 flex items-center justify-between">
       <Link href="/" className="font-semibold">
         NextWindUI
       </Link>
-      {AuthContext.isLoggedIn ? (
+      {authContext.isLoggedIn ? (
         <Button
           className="hover:underline"
           variant="outline"
