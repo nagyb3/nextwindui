@@ -3,15 +3,35 @@
 import React from "react";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/components/supabase/supabaseClient";
+import { Session, User, AuthApiError } from "@supabase/supabase-js";
 
 export default function page() {
-  const [username, setUsername] = React.useState<string>("");
+  const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [passwordConfirm, setPasswordConfirm] = React.useState<string>("");
 
   const handleLogin = () => {
-    //
+    handleLoginWithSupabase();
   };
+
+  const handleLoginWithSupabase = async () => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      console.log(error);
+      return;
+    }
+    console.log(data);
+  };
+
+  interface SignInResponse {
+    user?: User | null;
+    session?: Session | null;
+    error?: AuthApiError | null;
+  }
 
   return (
     <div>
@@ -22,13 +42,13 @@ export default function page() {
           <div className="flex flex-col items-center gap-y-2">
             <label htmlFor="username">Username:</label>
             <input
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               className="border border-neutral-400 rounded-md px-4 py-2 text-sm"
               type="text"
-              name="username"
-              id="username"
-              placeholder="Enter your username..."
-              value={username}
+              name="email"
+              id="email"
+              placeholder="Enter your email..."
+              value={email}
             />
           </div>
           <div className="flex flex-col items-center gap-y-2">
