@@ -4,18 +4,26 @@ import React from "react";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/components/supabase/supabaseClient";
-import { useAuthContext } from "@/components/auth-provider";
 import { useRouter } from "next/navigation";
 
 export default function page() {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [passwordConfirm, setPasswordConfirm] = React.useState<string>("");
+  const [username, setUsername] = React.useState<string>("");
 
   const [errorState, setErrorState] = React.useState<string>("");
 
-  const handleSignup = () => {
-    handleSignupWithSupabase();
+  const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (
+      password !== "" &&
+      passwordConfirm !== "" &&
+      username !== "" &&
+      email !== ""
+    ) {
+      handleSignupWithSupabase();
+    }
   };
 
   const router = useRouter();
@@ -25,6 +33,11 @@ export default function page() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            username,
+          },
+        },
       });
       if (error) {
         setErrorState("Error signing up");
@@ -45,7 +58,7 @@ export default function page() {
         <form
           action=""
           className="flex flex-col items-center gap-y-8"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={(e) => handleSignup(e)}
         >
           <div className="flex flex-col items-center gap-y-2">
             <label htmlFor="username">Email:</label>
@@ -57,6 +70,20 @@ export default function page() {
               id="email"
               placeholder="Enter your email..."
               value={email}
+              required
+            />
+          </div>
+          <div className="flex flex-col items-center gap-y-2">
+            <label htmlFor="username">Username:</label>
+            <input
+              onChange={(e) => setUsername(e.target.value)}
+              className="border border-neutral-400 rounded-md px-4 py-2 text-sm"
+              type="text"
+              name="username"
+              id="username"
+              placeholder="Enter your username..."
+              value={username}
+              required
             />
           </div>
           <div className="flex flex-col items-center gap-y-2">
@@ -69,6 +96,7 @@ export default function page() {
               id="password"
               placeholder="Enter your password..."
               value={password}
+              required
             />
           </div>
           <div className="flex flex-col items-center gap-y-2">
@@ -81,10 +109,11 @@ export default function page() {
               id="password-confirm"
               placeholder="Confirm your password..."
               value={passwordConfirm}
+              required
             />
           </div>
           <p>{errorState}</p>
-          <Button onClick={handleSignup}>SIGNUP</Button>
+          <Button type="submit">SIGNUP</Button>
         </form>
       </div>
     </div>
