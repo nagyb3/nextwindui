@@ -12,8 +12,6 @@ export default function navbar() {
 
   const authContext = useAuthContext();
 
-  console.log("navbar authContext", authContext);
-
   return (
     <nav className="h-[60px] border-b-neutral-600 border px-16 flex items-center justify-between">
       <Link href="/" className="font-semibold">
