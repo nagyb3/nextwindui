@@ -1,8 +1,11 @@
+"use client";
+
 import React from "react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuthContext } from "./auth-provider";
+import { supabase } from "./supabase/supabaseClient";
 
 export default function navbar() {
   const router = useRouter();
@@ -15,13 +18,22 @@ export default function navbar() {
         NextWindUI
       </Link>
       {authContext.isLoggedIn ? (
-        <Button
-          className="hover:underline"
-          variant="outline"
-          onClick={() => router.push("/settings")}
-        >
-          Settings
-        </Button>
+        <div className="flex gap-8">
+          <Button
+            className="hover:underline"
+            variant="outline"
+            onClick={() => router.push("/subforums")}
+          >
+            Subforums
+          </Button>
+          <Button
+            className="hover:underline"
+            variant="outline"
+            onClick={() => router.push("/settings")}
+          >
+            Settings
+          </Button>
+        </div>
       ) : (
         <Button
           className="hover:underline"
