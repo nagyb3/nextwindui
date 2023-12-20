@@ -29,9 +29,6 @@ export default function page() {
       return;
     }
     if (data) {
-      authContext.setIsLoggedIn(true);
-      data.user && authContext.setUser(data.user);
-      data.session && authContext.setSession(data.session);
       setErrorState("Successfully logged in!");
       setTimeout(() => router.push("/"), 1500);
     }

@@ -1,40 +1,52 @@
 "use client";
 
-import { ReactElement, createContext, useContext, useState } from "react";
-import { Session, User } from "@supabase/supabase-js";
+import {
+  ReactElement,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { Session } from "@supabase/supabase-js";
+import { supabase } from "./supabase/supabaseClient";
 
 export const AuthContext = createContext<AuthContextType>({
-  isLoggedIn: false,
-  setIsLoggedIn: () => {},
-  user: undefined,
-  setUser: () => {},
-  session: undefined,
-  setSession: () => {},
+  session: null,
+  signOut: () => Promise.resolve(),
 });
 
 export const useAuthContext = () => useContext(AuthContext);
 
 export function AuthContextProvider({ children }: { children: ReactElement }) {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [sessionState, setSessionState] = useState<Session | null>(null);
 
-  const [user, setUser] = useState<User | undefined>(undefined);
+  useEffect(() => {
+    supabase.auth.getSession().then((session) => {
+      session ? setSessionState(session.data.session) : setSessionState(null);
+      supabase.auth.onAuthStateChange((_event, session) => {
+        if (session) {
+          setSessionState(session);
+        } else {
+          setSessionState(null);
+        }
+      });
+    });
+  }, []);
 
-  const [session, setSession] = useState<Session | undefined>(undefined);
+  const signOut = useCallback(async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ isLoggedIn, setIsLoggedIn, user, setUser, session, setSession }}
-    >
+    <AuthContext.Provider value={{ session: sessionState, signOut }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export type AuthContextType = {
-  isLoggedIn: boolean;
-  setIsLoggedIn: (value: boolean) => void;
-  user: User | undefined;
-  setUser: (value: User | undefined) => void;
-  session: Session | undefined;
-  setSession: (value: Session | undefined) => void;
+  session: Session | null;
+  signOut: () => Promise<void>;
 };
