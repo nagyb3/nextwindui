@@ -38,17 +38,21 @@ export default function SubforumPage() {
         <h1 className="font-sembioldt text-3xl">Sub: {name}</h1>
         <h2>Posts:</h2>
         <div>
-          {subforumPosts?.map((post) => {
-            return (
-              <div
-                key={post.id}
-                className="flex flex-col items-center gap-y-4 border border-white rounded px-4 py-2 bg-black"
-              >
-                <h2 className="font-semibold text-2xl">{post.title}</h2>
-                <p>{post.text}</p>
-              </div>
-            );
-          })}
+          {subforumPosts ? (
+            subforumPosts.map((post) => {
+              return (
+                <div
+                  key={post.id}
+                  className="flex flex-col items-center gap-y-4 border border-white rounded px-4 py-2 bg-black"
+                >
+                  <h2 className="font-semibold text-2xl">{post.title}</h2>
+                  <p>{post.text}</p>
+                </div>
+              );
+            })
+          ) : (
+            <span className="loading loading-ring loading-lg"></span>
+          )}
         </div>
       </div>
     </div>

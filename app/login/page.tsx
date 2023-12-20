@@ -39,7 +39,7 @@ export default function LoginPage() {
   return (
     <div>
       <Navbar />
-      <div className="flex flex-col gap-8 py-16 items-center">
+      <div className="flex flex-col gap-8 py-16 items-center min-h-[calc(100vh-60px)]">
         <h1 className="text-3xl font-semibold">Login</h1>
         <form
           action=""

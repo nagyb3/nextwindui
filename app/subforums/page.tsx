@@ -33,17 +33,21 @@ export default function AllSubforumsPage() {
       <div className="flex flex-col items-center py-16 gap-y-8">
         <h1 className="font-sembioldt text-3xl">Subforums:</h1>
         <div>
-          {subforums?.map((subforum) => {
-            return (
-              <div
-                key={subforum.id}
-                className="px-4 py-2 border border-white rounded cursor-pointer"
-                onClick={() => router.push(`/subforums/${subforum.name}`)}
-              >
-                <p className="text-xl">{subforum.name}</p>
-              </div>
-            );
-          })}
+          {subforums ? (
+            subforums.map((subforum) => {
+              return (
+                <div
+                  key={subforum.id}
+                  className="px-4 py-2 border border-white rounded cursor-pointer"
+                  onClick={() => router.push(`/subforums/${subforum.name}`)}
+                >
+                  <p className="text-xl">{subforum.name}</p>
+                </div>
+              );
+            })
+          ) : (
+            <span className="loading loading-ring loading-lg"></span>
+          )}
         </div>
       </div>
     </div>
