@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useAuthContext } from "./auth-provider";
 import { supabase } from "./supabase/supabaseClient";
 
-export default function navbar() {
+export default function Navbar() {
   const router = useRouter();
 
   const authContext = useAuthContext();

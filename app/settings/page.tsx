@@ -14,7 +14,7 @@ import Navbar from "@/components/navbar";
 import { useAuthContext } from "@/components/auth-provider";
 import { useRouter } from "next/navigation";
 
-export default function page() {
+export default function SettingsPage() {
   const { setTheme } = useTheme();
 
   const authContext = useAuthContext();
@@ -22,9 +22,7 @@ export default function page() {
   const router = useRouter();
 
   const handleLogout = () => {
-    authContext.setIsLoggedIn(false);
-    authContext.setUser(undefined);
-    authContext.setSession(undefined);
+    authContext.signOut();
     router.push("/");
   };
 

@@ -6,7 +6,7 @@ import { supabase } from "@/components/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
 import { TSubforum } from "@/utils/types/subforums";
 
-export default function page() {
+export default function AllSubforumsPage() {
   const [subforums, setSubforums] = React.useState<TSubforum[] | undefined>(
     undefined
   );

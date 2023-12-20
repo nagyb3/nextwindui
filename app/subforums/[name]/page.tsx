@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { supabase } from "@/components/supabase/supabaseClient";
 import { TPost } from "@/utils/types/post";
 
-export default function page() {
+export default function SubforumPage() {
   const [subforumPosts, setSubforumPosts] = React.useState<TPost[] | undefined>(
     undefined
   );

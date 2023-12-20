@@ -7,7 +7,7 @@ import { supabase } from "@/components/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/components/auth-provider";
 
-export default function page() {
+export default function LoginPage() {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
 

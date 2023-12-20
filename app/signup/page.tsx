@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/components/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
 
-export default function page() {
+export default function SignupPage() {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const [passwordConfirm, setPasswordConfirm] = React.useState<string>("");
