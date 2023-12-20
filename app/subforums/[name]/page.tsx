@@ -28,6 +28,7 @@ export default function SubforumPage() {
       }
     };
     fetchSubforumPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -39,7 +40,10 @@ export default function SubforumPage() {
         <div>
           {subforumPosts?.map((post) => {
             return (
-              <div className="flex flex-col items-center gap-y-4 border border-white rounded px-4 py-2 bg-black">
+              <div
+                key={post.id}
+                className="flex flex-col items-center gap-y-4 border border-white rounded px-4 py-2 bg-black"
+              >
                 <h2 className="font-semibold text-2xl">{post.title}</h2>
                 <p>{post.text}</p>
               </div>
