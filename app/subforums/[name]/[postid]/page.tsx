@@ -5,23 +5,72 @@ import React, { useEffect } from "react";
 import Navbar from "@/components/navbar";
 import { TPost } from "@/utils/types/post";
 import { supabase } from "@/components/supabase/supabaseClient";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { TComment } from "@/utils/types/comment";
 
 export default function PostPage() {
-  const { postId } = useParams();
+  const { postid } = useParams();
 
   const [post, setPost] = React.useState<TPost | undefined>(undefined);
 
+  const [commentInput, setCommentInput] = React.useState<string>("");
+
+  const [postComments, setPostComments] = React.useState<
+    TComment[] | undefined
+  >(undefined);
+
+  const fetchPost = async () => {
+    const { data, error } = await supabase
+      .from("posts")
+      .select()
+      .eq("id", postid);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    data && setPost(data[0]);
+  };
+
+  const fetchComments = async () => {
+    const { data, error } = await supabase
+      .from("comments")
+      .select()
+      .eq("post_id", postid);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    data && setPostComments(data);
+  };
+
   useEffect(() => {
-    const fetchPost = async () => {
-      const { data, error } = await supabase.from("posts").select();
-      if (error) {
-        console.log(error);
-        return;
-      }
-      data && setPost(data[0]);
-    };
     fetchPost();
+    fetchComments();
   }, []);
+
+  const handleSubmitComment = async () => {
+    const { data, error } = await supabase.from("comments").insert([
+      {
+        post_id: postid,
+        text: commentInput,
+        comment_author_username: "anonymus",
+      },
+    ]);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    setCommentInput("");
+    fetchComments();
+  };
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSubmitComment();
+  };
+
+  console.log(postComments);
 
   return (
     <div>
@@ -37,8 +86,29 @@ export default function PostPage() {
               </div>
               <p>{post.text}</p>
             </div>
-            <div className="px-4 py-2 border border-white rounded shadow-lg">
-              <p className="text-lg">Comments:</p>
+            <div className="px-4 py-4 border border-white rounded shadow-lg flex-col flex gap-y-2">
+              <p className="text-xs">Send a comment:</p>
+              <form
+                onSubmit={(e) => handleFormSubmit(e)}
+                className="flex gap-x-2"
+              >
+                <Input
+                  type="text"
+                  placeholder="Send a comment..."
+                  className="border-[rgb(179,179,190)]"
+                  onChange={(e) => setCommentInput(e.target.value)}
+                  value={commentInput}
+                />
+                <Button type="submit">Send</Button>
+              </form>
+              <p className="text-lg mt-4">Comments:</p>
+              {postComments && (
+                <div>
+                  {postComments.map((comment) => (
+                    <p key={comment.id}>{comment.text}</p>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         ) : (
