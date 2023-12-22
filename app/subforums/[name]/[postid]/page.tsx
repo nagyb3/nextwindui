@@ -29,7 +29,7 @@ export default function PostPage() {
       <div className="min-h-[calc(100vh-60px)] flex flex-col items-center py-8">
         {post ? (
           <div key={post.id} className="flex flex-col gap-y-2">
-            <div className="shadow-lg flex flex-col gap-y-4 w-[1000px] px-4 py-4 border border-white rounded">
+            <div className="shadow-lg flex flex-col gap-y-4 w-[1000px] px-4 py-4 border border-white rounded bg-[var(--post-background)]">
               <p className="text-2xl font-semibold">{post.title}</p>
               <div className="flex justify-between">
                 <p className="text-xs">Author: {post.author_username}</p>

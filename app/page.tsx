@@ -40,7 +40,7 @@ export default function Home() {
             homepagePosts.map((post) => (
               <div
                 key={post.id}
-                className="border border-white bg-black px-4 py-2 rounded cursor-pointer"
+                className="border border-white bg-[var(--post-background)] px-4 py-2 rounded cursor-pointer"
                 onClick={() =>
                   router.push(`/subforums/${post.subforum_name}/${post.id}`)
                 }
