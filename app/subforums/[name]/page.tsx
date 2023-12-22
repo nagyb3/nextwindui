@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import Navbar from "@/components/navbar";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/components/supabase/supabaseClient";
 import { TPost } from "@/utils/types/post";
 
@@ -23,13 +23,13 @@ export default function SubforumPage() {
         console.log(error);
         return;
       }
-      if (data) {
-        setSubforumPosts(data);
-      }
+      data && setSubforumPosts(data);
     };
     fetchSubforumPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const router = useRouter();
 
   return (
     <div className="min-h-[100vh]">
@@ -42,6 +42,9 @@ export default function SubforumPage() {
             subforumPosts.map((post) => {
               return (
                 <div
+                  onClick={() =>
+                    router.push(`/subforums/${post.subforum_name}/${post.id}`)
+                  }
                   key={post.id}
                   className="flex flex-col items-center gap-y-4 border border-white rounded px-4 py-2 bg-black"
                 >
