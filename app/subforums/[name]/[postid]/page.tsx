@@ -70,8 +70,6 @@ export default function PostPage() {
     handleSubmitComment();
   };
 
-  console.log(postComments);
-
   return (
     <div>
       <Navbar></Navbar>
