@@ -27,8 +27,6 @@ export default function Home() {
 
   const router = useRouter();
 
-  console.log(homepagePosts);
-
   return (
     <div className="min-h-[100vh]">
       <Navbar />

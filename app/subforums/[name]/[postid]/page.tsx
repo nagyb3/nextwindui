@@ -8,6 +8,14 @@ import { supabase } from "@/components/supabase/supabaseClient";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { TComment } from "@/utils/types/comment";
+import {
+  HandThumbUpIcon as HandThumbUpIconOutline,
+  HandThumbDownIcon as HandThumbDownIconOutline,
+} from "@heroicons/react/24/outline";
+import {
+  HandThumbUpIcon as HandThumbUpIconSolid,
+  HandThumbDownIcon as HandThumbDownIconSolid,
+} from "@heroicons/react/24/solid";
 
 export default function PostPage() {
   const { postid } = useParams();
@@ -19,6 +27,12 @@ export default function PostPage() {
   const [postComments, setPostComments] = React.useState<
     TComment[] | undefined
   >(undefined);
+
+  const [currentUserHasUpvoted, setCurrentUserHasUpvoted] =
+    React.useState<boolean>(false);
+
+  const [currentUserHasDownvoted, setCurrentUserHasDownvoted] =
+    React.useState<boolean>(false);
 
   const fetchPost = async () => {
     const { data, error } = await supabase
@@ -49,8 +63,15 @@ export default function PostPage() {
     fetchComments();
   }, []);
 
+  useEffect(() => {
+    post?.users_who_upvoted.includes("anonymus") &&
+      setCurrentUserHasUpvoted(true);
+    post?.users_who_downvoted.includes("anonymus") &&
+      setCurrentUserHasDownvoted(true);
+  }, [post]);
+
   const handleSubmitComment = async () => {
-    const { data, error } = await supabase.from("comments").insert([
+    const { error } = await supabase.from("comments").insert([
       {
         post_id: postid,
         text: commentInput,
@@ -70,6 +91,109 @@ export default function PostPage() {
     handleSubmitComment();
   };
 
+  const handleThumbsDownButton = async () => {
+    if (post) {
+      if (!currentUserHasDownvoted && !currentUserHasUpvoted) {
+        const { error } = await supabase
+          .from("posts")
+          .update({
+            users_who_downvoted: [...post.users_who_downvoted, "anonymus"],
+          })
+          .eq("id", post.id);
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setCurrentUserHasDownvoted(true);
+      } else if (currentUserHasUpvoted) {
+        // remove downvote
+        const { error } = await supabase
+          .from("posts")
+          .update({
+            users_who_upvoted: post.users_who_upvoted.filter(
+              (user) => user !== "anonymus"
+            ),
+            users_who_downvoted: [...post.users_who_downvoted, "anonymus"],
+          })
+          .eq("id", post.id)
+          .select();
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setCurrentUserHasUpvoted(false);
+        setCurrentUserHasDownvoted(true);
+      } else if (currentUserHasDownvoted) {
+        // remove upvote
+        const { error } = await supabase
+          .from("posts")
+          .update({
+            users_who_downvoted: post.users_who_downvoted.filter(
+              (user) => user !== "anonymus"
+            ),
+          })
+          .eq("id", post.id);
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setCurrentUserHasDownvoted(false);
+      }
+    }
+  };
+
+  const handleThumbsUpButton = async () => {
+    if (post) {
+      if (!currentUserHasUpvoted && !currentUserHasDownvoted) {
+        const { error } = await supabase
+          .from("posts")
+          .update({
+            users_who_upvoted: [...post.users_who_upvoted, "anonymus"],
+          })
+          .eq("id", post.id)
+          .select();
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setCurrentUserHasUpvoted(true);
+      } else if (currentUserHasDownvoted) {
+        // remove downvote
+        const { data, error } = await supabase
+          .from("posts")
+          .update({
+            users_who_downvoted: post.users_who_downvoted.filter(
+              (user) => user !== "anonymus"
+            ),
+            users_who_upvoted: [...post.users_who_upvoted, "anonymus"],
+          })
+          .eq("id", post.id);
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setCurrentUserHasDownvoted(false);
+        setCurrentUserHasUpvoted(true);
+      } else if (currentUserHasUpvoted) {
+        // remove upvote
+        const { data: removeUpvoteData, error: removeUpvoteError } =
+          await supabase
+            .from("posts")
+            .update({
+              users_who_upvoted: post.users_who_upvoted.filter(
+                (user) => user !== "anonymus"
+              ),
+            })
+            .eq("id", post.id);
+        if (removeUpvoteError) {
+          console.log(removeUpvoteError);
+          return;
+        }
+        setCurrentUserHasUpvoted(false);
+      }
+    }
+  };
+
   return (
     <div>
       <Navbar></Navbar>
@@ -77,7 +201,33 @@ export default function PostPage() {
         {post ? (
           <div key={post.id} className="flex flex-col gap-y-2">
             <div className="shadow-lg flex flex-col gap-y-4 w-[1000px] px-4 py-4 border border-white rounded bg-[var(--post-background)]">
-              <p className="text-2xl font-semibold">{post.title}</p>
+              <div className="flex justify-between">
+                <p className="text-2xl font-semibold">{post.title}</p>
+                <div className="flex gap-x-2">
+                  {currentUserHasDownvoted ? (
+                    <HandThumbDownIconSolid
+                      onClick={handleThumbsDownButton}
+                      className="text-white w-[24px] h-[24px] cursor-pointer"
+                    />
+                  ) : (
+                    <HandThumbDownIconOutline
+                      onClick={handleThumbsDownButton}
+                      className="text-white w-[24px] h-[24px] cursor-pointer"
+                    />
+                  )}
+                  {currentUserHasUpvoted ? (
+                    <HandThumbUpIconSolid
+                      onClick={handleThumbsUpButton}
+                      className="text-white w-[24px] h-[24px] cursor-pointer"
+                    />
+                  ) : (
+                    <HandThumbUpIconOutline
+                      onClick={handleThumbsUpButton}
+                      className="text-white w-[24px] h-[24px] cursor-pointer"
+                    />
+                  )}
+                </div>
+              </div>
               <div className="flex justify-between">
                 <p className="text-xs">Author: {post.author_username}</p>
                 <p className="text-xs">Subforum: {post.subforum_name}</p>
