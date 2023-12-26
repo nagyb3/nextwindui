@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import Navbar from "@/components/navbar";
 import { TPost } from "@/utils/types/post";
 import { supabase } from "@/components/supabase/supabaseClient";
@@ -34,7 +34,7 @@ export default function PostPage() {
   const [currentUserHasDownvoted, setCurrentUserHasDownvoted] =
     React.useState<boolean>(false);
 
-  const fetchPost = async () => {
+  const fetchPost = useCallback(async () => {
     const { data, error } = await supabase
       .from("posts")
       .select()
@@ -44,9 +44,9 @@ export default function PostPage() {
       return;
     }
     data && setPost(data[0]);
-  };
+  }, [postid]);
 
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     const { data, error } = await supabase
       .from("comments")
       .select()
@@ -56,12 +56,12 @@ export default function PostPage() {
       return;
     }
     data && setPostComments(data);
-  };
+  }, [postid]);
 
   useEffect(() => {
     fetchPost();
     fetchComments();
-  }, []);
+  }, [fetchPost, fetchComments]);
 
   useEffect(() => {
     post?.users_who_upvoted.includes("anonymus") &&
