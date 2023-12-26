@@ -29,6 +29,13 @@ export default function Navbar() {
           <Button
             className="hover:underline"
             variant="outline"
+            onClick={() => router.push("/myprofile")}
+          >
+            Myprofile
+          </Button>
+          <Button
+            className="hover:underline"
+            variant="outline"
             onClick={() => router.push("/settings")}
           >
             Settings
