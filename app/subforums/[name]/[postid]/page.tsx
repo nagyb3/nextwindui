@@ -16,6 +16,7 @@ import {
   HandThumbUpIcon as HandThumbUpIconSolid,
   HandThumbDownIcon as HandThumbDownIconSolid,
 } from "@heroicons/react/24/solid";
+import { useAuthContext } from "@/components/auth-provider";
 
 export default function PostPage() {
   const { postid } = useParams();
@@ -33,6 +34,8 @@ export default function PostPage() {
 
   const [currentUserHasDownvoted, setCurrentUserHasDownvoted] =
     React.useState<boolean>(false);
+
+  const authContext = useAuthContext();
 
   const fetchPost = useCallback(async () => {
     const { data, error } = await supabase
@@ -235,21 +238,25 @@ export default function PostPage() {
               <p>{post.text}</p>
             </div>
             <div className="px-4 py-4 border border-white rounded shadow-lg flex-col flex gap-y-2">
-              <p className="text-xs">Send a comment:</p>
-              <form
-                onSubmit={(e) => handleFormSubmit(e)}
-                className="flex gap-x-2"
-              >
-                <Input
-                  type="text"
-                  placeholder="Send a comment..."
-                  className="border-[rgb(179,179,190)]"
-                  onChange={(e) => setCommentInput(e.target.value)}
-                  value={commentInput}
-                />
-                <Button type="submit">Send</Button>
-              </form>
-              <p className="text-lg mt-4">Comments:</p>
+              {authContext.session?.user?.id && (
+                <div className="mb-4">
+                  <p className="text-xs">Send a comment:</p>
+                  <form
+                    onSubmit={(e) => handleFormSubmit(e)}
+                    className="flex gap-x-2"
+                  >
+                    <Input
+                      type="text"
+                      placeholder="Send a comment..."
+                      className="border-[rgb(179,179,190)]"
+                      onChange={(e) => setCommentInput(e.target.value)}
+                      value={commentInput}
+                    />
+                    <Button type="submit">Send</Button>
+                  </form>
+                </div>
+              )}
+              <p className="text-lg">Comments:</p>
               {postComments && (
                 <div>
                   {postComments.map((comment) => (
