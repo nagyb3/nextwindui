@@ -37,7 +37,7 @@ export default function Home() {
           Create a post!
         </Button>
         <h2>All of the posts:</h2>
-        <div>
+        <div className="flex flex-col gap-y-4">
           {homepagePosts ? (
             homepagePosts.map((post) => (
               <div

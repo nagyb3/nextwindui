@@ -8,14 +8,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuthContext } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/components/supabase/supabaseClient";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function MakePostPage() {
   const [title, setTitle] = React.useState<string | undefined>(undefined);
   const [textarea, setTextarea] = React.useState<string | undefined>(undefined);
   const [subforum, setSubforum] = React.useState<string | undefined>(undefined);
+
   const [errorState, setErrorState] = React.useState<string | undefined>(
     undefined
   );
+
+  const [successState, setSuccessState] = React.useState<string | undefined>(
+    undefined
+  );
+
+  const router = useRouter();
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,6 +40,12 @@ export default function MakePostPage() {
       });
       if (error) {
         setErrorState("An erro has occured while trying to submit the post.");
+      } else {
+        errorState && setErrorState(undefined);
+        setSuccessState("Post submitted successfully!");
+        setTimeout(() => {
+          router.push("/");
+        }, 1000);
       }
     }
     //TODO handle supabase add post to db
@@ -84,6 +99,11 @@ export default function MakePostPage() {
             {errorState && (
               <p className="text-center font-semibold text-red-500">
                 {errorState}
+              </p>
+            )}
+            {successState && (
+              <p className="text-center font-semibold text-green-500">
+                {successState}
               </p>
             )}
           </form>
