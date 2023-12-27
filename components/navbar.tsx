@@ -20,28 +20,28 @@ export default function Navbar() {
       {authContext.session !== null ? (
         <div className="flex gap-8">
           <Button
-            className="hover:underline"
+            className="hover:underline border-0"
             variant="outline"
             onClick={() => router.push("/subforums")}
           >
             Subforums
           </Button>
           <Button
-            className="hover:underline"
+            className="hover:underline border-0"
             variant="outline"
             onClick={() => router.push("/myprofile")}
           >
             Myprofile
           </Button>
           <Button
-            className="hover:underline"
+            className="hover:underline border-0"
             variant="outline"
             onClick={() => router.push("/settings")}
           >
             Settings
           </Button>
           <Button
-            className="hover:underline"
+            className="hover:underline border-0"
             variant="outline"
             onClick={() => authContext.signOut()}
           >
@@ -50,7 +50,7 @@ export default function Navbar() {
         </div>
       ) : (
         <Button
-          className="hover:underline"
+          className="hover:underline border-0"
           variant="outline"
           onClick={() => router.push("/login")}
         >

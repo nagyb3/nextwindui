@@ -5,6 +5,7 @@ import { TPost } from "@/utils/types/post";
 import { useEffect, useState } from "react";
 import { supabase } from "@/components/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [homepagePosts, setHomepagePosts] = useState<TPost[] | undefined>(
@@ -32,6 +33,9 @@ export default function Home() {
       <Navbar />
       <div className="flex flex-col gap-y-8 py-16 items-center">
         <h1 className="font-semibold text-3xl">Home page</h1>
+        <Button className="" onClick={() => router.push("/make-post")}>
+          Create a post!
+        </Button>
         <h2>All of the posts:</h2>
         <div>
           {homepagePosts ? (
