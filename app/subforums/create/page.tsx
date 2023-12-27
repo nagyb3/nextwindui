@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useDebugValue } from "react";
+import React from "react";
 import Navbar from "@/components/navbar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useAuthContext } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/components/supabase/supabaseClient";
@@ -27,15 +26,12 @@ export default function MakePostPage() {
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!title || !textarea || !subforum) {
+    if (!subforum) {
       setErrorState("Please fill in all of the fields.");
       return;
     } else {
-      const { error } = await supabase.from("posts").insert({
-        title: title,
-        subforum_name: subforum,
-        text: textarea,
-        author_username: "anonymous",
+      const { error } = await supabase.from("subforum").insert({
+        name: subforum,
       });
       if (error) {
         setErrorState("An erro has occured while trying to submit the post.");
@@ -43,7 +39,7 @@ export default function MakePostPage() {
         errorState && setErrorState(undefined);
         setSuccessState("Post submitted successfully!");
         setTimeout(() => {
-          router.push("/");
+          router.push("/subforums");
         }, 1000);
       }
     }
@@ -55,7 +51,7 @@ export default function MakePostPage() {
     <div>
       <Navbar />
       <div className="min-h-[calc(100vh-60px)] flex flex-col items-center py-8 gap-y-8">
-        <h1 className="font-sembibold text-xl">Submit post</h1>
+        <h1 className="font-sembibold text-xl">Create new subforum!</h1>
         {authContext?.session?.user ? (
           <form
             className="w-[600px] flex flex-col gap-y-4"
@@ -72,28 +68,7 @@ export default function MakePostPage() {
                 placeholder="Enter subforum name..."
               />
             </div>
-            <div>
-              <Label htmlFor="title">Title:</Label>
-              <Input
-                onChange={(e) => setTitle(e.target.value)}
-                value={title}
-                type="text"
-                name="title"
-                id="title"
-                placeholder="Enter title.."
-              />
-            </div>
-            <div>
-              <label htmlFor="textarea">Post content:</label>
-              <Textarea
-                onChange={(e) => setTextarea(e.target.value)}
-                value={textarea}
-                placeholder="Enter the content of the post here..."
-                name="textarea"
-                id="textarea"
-              ></Textarea>
-            </div>
-            <Button className="self-center">Make post</Button>
+            <Button className="self-center">Create subforum</Button>
             {errorState && (
               <p className="text-center font-semibold text-red-500">
                 {errorState}
