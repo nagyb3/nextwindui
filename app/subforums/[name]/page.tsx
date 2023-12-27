@@ -46,9 +46,9 @@ export default function SubforumPage() {
                     router.push(`/subforums/${post.subforum_name}/${post.id}`)
                   }
                   key={post.id}
-                  className="cursor-pointer flex flex-col items-center gap-y-4 border border-white rounded px-4 py-2 bg-[var(--post-background)] shadow-lg cursor-pointer)]"
+                  className="border border-white bg-[var(--post-background)] px-4 py-4 gap-y-2 flex flex-col rounded cursor-pointer w-[600px]"
                 >
-                  <h2 className="font-semibold text-2xl">{post.title}</h2>
+                  <h2 className="font-semibold text-lg">{post.title}</h2>
                   <p>{post.text}</p>
                 </div>
               );

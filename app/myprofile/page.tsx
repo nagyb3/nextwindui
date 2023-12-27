@@ -48,9 +48,9 @@ export default function MyProfilePage() {
                   router.push(`/subforums/${post.subforum_name}/${post.id}`)
                 }
                 key={post.id}
-                className="border border-white rounded p-4 bg-[var(--post-background)] cursor-pointer"
+                className="border border-white bg-[var(--post-background)] px-4 py-4 gap-y-2 flex flex-col rounded cursor-pointer w-[600px]"
               >
-                <h3 className="font-semibold">{post.title}</h3>
+                <h3 className="text-lg font-semibold">{post.title}</h3>
                 <p>{post.text}</p>
               </div>
             ))
