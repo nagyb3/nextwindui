@@ -34,7 +34,7 @@ export default function Home() {
       <Navbar />
       <div className="flex flex-col gap-y-8 py-16 items-center">
         <h1 className="font-semibold text-3xl">Home page</h1>
-        <Button className="" onClick={() => router.push("/make-post")}>
+        <Button onClick={() => router.push("/make-post")}>
           Create a post!
         </Button>
         <h2>All of the posts:</h2>

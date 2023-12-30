@@ -6,6 +6,7 @@ import { supabase } from "@/components/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
 import { TSubforum } from "@/utils/types/subforums";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function AllSubforumsPage() {
   const [subforums, setSubforums] = React.useState<TSubforum[] | undefined>(
@@ -36,17 +37,17 @@ export default function AllSubforumsPage() {
         <Button onClick={() => router.push("/subforums/create")}>
           Make new subforum!
         </Button>
-        <div className="w-[600px] flex flex-col gap-y-4 ">
+        <div className="w-[600px] flex flex-col gap-y-4 items-center">
           {subforums ? (
             subforums.map((subforum) => {
               return (
-                <div
+                <Link
                   key={subforum.id}
-                  className="px-4 py-2 border border-white rounded cursor-pointer bg-[var(--post-background)]"
-                  onClick={() => router.push(`/subforums/${subforum.name}`)}
+                  className="px-4 py-2 border border-white rounded cursor-pointer bg-[var(--post-background)] text-xl w-full"
+                  href={`/subforums/${subforum.name}`}
                 >
-                  <p className="text-xl">{subforum.name}</p>
-                </div>
+                  {subforum.name}
+                </Link>
               );
             })
           ) : (

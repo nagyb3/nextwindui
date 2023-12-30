@@ -10,8 +10,6 @@ import { supabase } from "@/components/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
 
 export default function MakePostPage() {
-  const [title, setTitle] = React.useState<string | undefined>(undefined);
-  const [textarea, setTextarea] = React.useState<string | undefined>(undefined);
   const [subforum, setSubforum] = React.useState<string | undefined>(undefined);
 
   const [errorState, setErrorState] = React.useState<string | undefined>(

@@ -1,14 +1,9 @@
-"use client";
-
 import React from "react";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuthContext } from "./auth-provider";
 
 export default function Navbar() {
-  const router = useRouter();
-
   const authContext = useAuthContext();
 
   return (
@@ -17,30 +12,27 @@ export default function Navbar() {
         NextWindUI
       </Link>
       {authContext.session !== null ? (
-        <div className="flex gap-8">
-          <Button
-            className="hover:underline border-0"
-            variant="outline"
-            onClick={() => router.push("/subforums")}
+        <div className="flex gap-16">
+          <Link
+            href="/subforums"
+            className="hover:underline border-0 flex items-center text-sm font-medium"
           >
             Subforums
-          </Button>
-          <Button
-            className="hover:underline border-0"
-            variant="outline"
-            onClick={() => router.push("/myprofile")}
+          </Link>
+          <Link
+            href="/myprofile"
+            className="hover:underline border-0 flex items-center text-sm font-medium"
           >
             Myprofile
-          </Button>
-          <Button
-            className="hover:underline border-0"
-            variant="outline"
-            onClick={() => router.push("/settings")}
+          </Link>
+          <Link
+            href="/settings"
+            className="hover:underline border-0 flex items-center text-sm font-medium"
           >
             Settings
-          </Button>
+          </Link>
           <Button
-            className="hover:underline border-0"
+            className="hover:underline border-0 flex items-center text-sm font-medium p-0"
             variant="outline"
             onClick={() => authContext.signOut()}
           >
@@ -48,13 +40,12 @@ export default function Navbar() {
           </Button>
         </div>
       ) : (
-        <Button
-          className="hover:underline border-0"
-          variant="outline"
-          onClick={() => router.push("/login")}
+        <Link
+          href="/login"
+          className="hover:underline border-0 flex items-center text-sm font-medium"
         >
           Log In
-        </Button>
+        </Link>
       )}
     </nav>
   );
