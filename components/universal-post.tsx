@@ -1,5 +1,6 @@
+"use client";
+
 import { TPost } from "@/utils/types/post";
-import Link from "next/link";
 import React from "react";
 import {
   HandThumbUpIcon as HandThumbUpIconOutline,
@@ -9,6 +10,7 @@ import {
   HandThumbUpIcon as HandThumbUpIconSolid,
   HandThumbDownIcon as HandThumbDownIconSolid,
 } from "@heroicons/react/24/solid";
+import { useRouter } from "next/navigation";
 
 export default function UniversalPost({
   post,
@@ -17,18 +19,33 @@ export default function UniversalPost({
   post: TPost;
   showSubforum?: boolean;
 }) {
-  const handleThumbsUpButton = () => {
-    //
+  const router = useRouter();
+
+  const handleThumbsUpButton = (
+    e: React.MouseEvent<SVGSVGElement, MouseEvent>
+  ) => {
+    console.log("handleThumbsDownButton");
   };
 
-  const handleThumbsDownButton = () => {
-    //
+  const handleThumbsDownButton = (
+    e: React.MouseEvent<SVGSVGElement, MouseEvent>
+  ) => {
+    console.log("handleThumbsDownButton");
+  };
+
+  const handlePostClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === "svg") {
+      return;
+    } else {
+      router.push(`/subforums/${post.subforum_name}/${post.id}`);
+    }
   };
 
   return (
-    <Link
+    <div
       className="border border-white bg-[var(--post-background)] px-4 py-4 gap-y-2 flex flex-col rounded cursor-pointer w-[600px]"
-      href={`/subforums/${post.subforum_name}/${post.id}`}
+      onClick={(e) => handlePostClick(e)}
     >
       <div className="flex justify-between">
         <p className="text-lg font-semibold">{post.title}</p>
@@ -36,12 +53,12 @@ export default function UniversalPost({
           <div className="flex gap-x-1">
             {false ? (
               <HandThumbDownIconSolid
-                onClick={handleThumbsDownButton}
+                onClick={(e) => handleThumbsDownButton(e)}
                 className="text-white w-[24px] h-[24px] cursor-pointer"
               />
             ) : (
               <HandThumbDownIconOutline
-                onClick={handleThumbsDownButton}
+                onClick={(e) => handleThumbsDownButton(e)}
                 className="text-white w-[24px] h-[24px] cursor-pointer"
               />
             )}
@@ -50,13 +67,13 @@ export default function UniversalPost({
           <div className="flex gap-x-1">
             {false ? (
               <HandThumbUpIconSolid
-                onClick={handleThumbsUpButton}
+                onClick={(e) => handleThumbsUpButton(e)}
                 className="text-white w-[24px] h-[24px] cursor-pointer"
               />
             ) : (
               <HandThumbUpIconOutline
-                onClick={handleThumbsUpButton}
-                className="text-white w-[24px] h-[24px] cursor-pointer"
+                onClick={(e) => handleThumbsUpButton(e)}
+                className="text-white w-[24px] h-[24px] cursor-pointer z-50"
               />
             )}
             <p>{post.users_who_upvoted.length}</p>
@@ -70,6 +87,6 @@ export default function UniversalPost({
         )}
       </div>
       <p className="break-words">{post.text}</p>
-    </Link>
+    </div>
   );
 }
