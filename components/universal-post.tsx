@@ -10,7 +10,13 @@ import {
   HandThumbDownIcon as HandThumbDownIconSolid,
 } from "@heroicons/react/24/solid";
 
-export default function UniversalPost({ post }: { post: TPost }) {
+export default function UniversalPost({
+  post,
+  showSubforum,
+}: {
+  post: TPost;
+  showSubforum?: boolean;
+}) {
   const handleThumbsUpButton = () => {
     //
   };
@@ -56,6 +62,12 @@ export default function UniversalPost({ post }: { post: TPost }) {
             <p>{post.users_who_upvoted.length}</p>
           </div>
         </div>
+      </div>
+      <div className="flex justify-between">
+        <p className="text-xs">Author: {post.author_username}</p>
+        {showSubforum && (
+          <p className="text-xs">Subforum: {post.subforum_name}</p>
+        )}
       </div>
       <p className="break-words">{post.text}</p>
     </Link>
