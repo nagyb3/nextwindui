@@ -9,6 +9,7 @@ import { useAuthContext } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/components/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function MakePostPage() {
   const [title, setTitle] = React.useState<string | undefined>(undefined);
@@ -106,14 +107,14 @@ export default function MakePostPage() {
             )}
           </form>
         ) : (
-          <p>
+          <p className="flex gap-x-[6px]">
             You must be
-            <a
+            <Link
               href="/login"
               className="underline text-orange-500 hover:relative hover:top-[1px]"
             >
               logged in
-            </a>
+            </Link>
             to submit a post.
           </p>
         )}

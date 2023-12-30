@@ -8,6 +8,7 @@ import { useAuthContext } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/components/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function MakePostPage() {
   const [subforum, setSubforum] = React.useState<string | undefined>(undefined);
@@ -79,7 +80,16 @@ export default function MakePostPage() {
             )}
           </form>
         ) : (
-          <p>You must be logged in to submit a post.</p>
+          <p className="flex gap-x-[6px]">
+            You must be{" "}
+            <Link
+              href="/login"
+              className="underline text-orange-500 hover:relative hover:top-[1px]"
+            >
+              logged in
+            </Link>{" "}
+            to submit a post.
+          </p>
         )}
       </div>
     </div>
