@@ -56,7 +56,7 @@ export default function MyProfilePage() {
         <div className="flex flex-col gap-y-4">
           {currentUserPosts ? (
             currentUserPosts?.map((post) => (
-              <UniversalPost post={post}></UniversalPost>
+              <UniversalPost key={post.id} post={post}></UniversalPost>
             ))
           ) : (
             <span className="loading loading-ring loading-lg"></span>

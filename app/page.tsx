@@ -41,7 +41,7 @@ export default function Home() {
         <div className="flex flex-col gap-y-4">
           {homepagePosts ? (
             homepagePosts.map((post) => (
-              <UniversalPost post={post}></UniversalPost>
+              <UniversalPost key={post.id} post={post}></UniversalPost>
             ))
           ) : (
             <span className="loading loading-ring loading-lg"></span>
