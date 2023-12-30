@@ -56,7 +56,7 @@ export default function MakePostPage() {
     <div>
       <Navbar />
       <div className="min-h-[calc(100vh-60px)] flex flex-col items-center py-8 gap-y-8">
-        <h1 className="font-sembibold text-xl">Submit post</h1>
+        <h1 className="font-sembibold text-xl">Create new post</h1>
         {authContext?.session?.user ? (
           <form
             className="w-[600px] flex flex-col gap-y-4"
@@ -71,6 +71,7 @@ export default function MakePostPage() {
                 name="subforum"
                 id="subforum"
                 placeholder="Enter subforum name..."
+                required
               />
             </div>
             <div>
@@ -82,6 +83,7 @@ export default function MakePostPage() {
                 name="title"
                 id="title"
                 placeholder="Enter title.."
+                required
               />
             </div>
             <div>
@@ -92,6 +94,8 @@ export default function MakePostPage() {
                 placeholder="Enter the content of the post here..."
                 name="textarea"
                 id="textarea"
+                required
+                rows={12}
               ></Textarea>
             </div>
             <Button className="self-center">Make post</Button>
