@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/components/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import UniversalPost from "@/components/universal-post";
 
 export default function Home() {
   const [homepagePosts, setHomepagePosts] = useState<TPost[] | undefined>(
@@ -40,16 +41,7 @@ export default function Home() {
         <div className="flex flex-col gap-y-4">
           {homepagePosts ? (
             homepagePosts.map((post) => (
-              <div
-                key={post.id}
-                className="border border-white bg-[var(--post-background)] px-4 py-4 gap-y-2 flex flex-col rounded cursor-pointer w-[600px]"
-                onClick={() =>
-                  router.push(`/subforums/${post.subforum_name}/${post.id}`)
-                }
-              >
-                <p className="text-lg font-semibold">{post.title}</p>
-                <p>{post.text}</p>
-              </div>
+              <UniversalPost post={post}></UniversalPost>
             ))
           ) : (
             <span className="loading loading-ring loading-lg"></span>

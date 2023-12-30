@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/components/supabase/supabaseClient";
 import { TPost } from "@/utils/types/post";
+import UniversalPost from "@/components/universal-post";
 
 export default function SubforumPage() {
   const [subforumPosts, setSubforumPosts] = React.useState<TPost[] | undefined>(
@@ -39,23 +40,10 @@ export default function SubforumPage() {
         <div>
           {subforumPosts ? (
             subforumPosts.length > 0 ? (
-              <div>
-                <h2>Posts:</h2>
+              <div className="flex flex-col gap-y-4 items-center">
+                <h2 className="text-lg">Posts:</h2>
                 {subforumPosts.map((post) => {
-                  return (
-                    <div
-                      onClick={() =>
-                        router.push(
-                          `/subforums/${post.subforum_name}/${post.id}`
-                        )
-                      }
-                      key={post.id}
-                      className="border border-white bg-[var(--post-background)] px-4 py-4 gap-y-2 flex flex-col rounded cursor-pointer w-[600px]"
-                    >
-                      <h2 className="font-semibold text-lg">{post.title}</h2>
-                      <p>{post.text}</p>
-                    </div>
-                  );
+                  return <UniversalPost post={post}></UniversalPost>;
                 })}
               </div>
             ) : (

@@ -38,7 +38,7 @@ export default function MakePostPage() {
         author_username: "anonymous",
       });
       if (error) {
-        setErrorState("An erro has occured while trying to submit the post.");
+        setErrorState("An error has occured while trying to submit the post.");
       } else {
         errorState && setErrorState(undefined);
         setSuccessState("Post submitted successfully!");
@@ -106,7 +106,16 @@ export default function MakePostPage() {
             )}
           </form>
         ) : (
-          <p>You must be logged in to submit a post.</p>
+          <p>
+            You must be
+            <a
+              href="/login"
+              className="underline text-orange-500 hover:relative hover:top-[1px]"
+            >
+              logged in
+            </a>
+            to submit a post.
+          </p>
         )}
       </div>
     </div>
