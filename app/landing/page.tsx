@@ -1,7 +1,9 @@
+"use client";
+
 import React from "react";
 import Navbar from "@/components/navbar";
 
-export default function page() {
+export default function LandingPage() {
   return (
     <div className="min-h-[100vh]">
       <Navbar />
