@@ -15,7 +15,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const { data, error } = await supabase.from("posts").select().limit(20);
+      const { data, error } = await supabase.from("posts").select().limit(10);
       if (error) {
         console.log(error);
         return;

@@ -57,7 +57,7 @@ export default function UniversalPost({ post }: { post: TPost }) {
           </div>
         </div>
       </div>
-      <p>{post.text}</p>
+      <p className="break-words">{post.text}</p>
     </Link>
   );
 }
