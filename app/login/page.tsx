@@ -6,12 +6,18 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/components/supabase/supabaseClient";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/components/auth-provider";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
 
-  const [errorState, setErrorState] = React.useState<string>("");
+  const [errorState, setErrorState] = React.useState<string | undefined>(
+    undefined
+  );
+  const [successState, setSuccessState] = React.useState<string | undefined>(
+    undefined
+  );
 
   const handleLogin = () => {
     handleLoginWithSupabase();
@@ -25,11 +31,12 @@ export default function LoginPage() {
       password,
     });
     if (error) {
-      console.log(error);
+      setErrorState("The email or password is incorrect!");
       return;
     }
     if (data) {
-      setErrorState("Successfully logged in!");
+      setErrorState(undefined);
+      setSuccessState("Successfully logged in!");
       setTimeout(() => router.push("/"), 1500);
     }
   };
@@ -56,6 +63,7 @@ export default function LoginPage() {
               id="email"
               placeholder="Enter your email..."
               value={email}
+              required
             />
           </div>
           <div className="flex flex-col items-center gap-y-2">
@@ -68,14 +76,27 @@ export default function LoginPage() {
               id="password"
               placeholder="Enter your password..."
               value={password}
+              required
             />
           </div>
           <Button onClick={handleLogin}>LOG IN</Button>
+          {errorState && (
+            <p className="text-red-500 font-semibold text-center">
+              {errorState}
+            </p>
+          )}
+          {successState && (
+            <p className="text-green-500 font-semibold text-center">
+              {successState}
+            </p>
+          )}
+          <Link
+            href={"/signup"}
+            className="hover:underline text-orange-600 text-sm"
+          >
+            Sign up if you don&apos;t have an account yet!
+          </Link>
         </form>
-        <p>{errorState}</p>
-        <Button variant="link" onClick={() => router.push("/signup")}>
-          Sign up if you don&apos;t have an account yet!
-        </Button>
       </div>
     </div>
   );
