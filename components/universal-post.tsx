@@ -1,7 +1,7 @@
 "use client";
 
 import { TPost } from "@/utils/types/post";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   HandThumbUpIcon as HandThumbUpIconOutline,
   HandThumbDownIcon as HandThumbDownIconOutline,
@@ -11,6 +11,7 @@ import {
   HandThumbDownIcon as HandThumbDownIconSolid,
 } from "@heroicons/react/24/solid";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/components/supabase/supabaseClient";
 
 export default function UniversalPost({
   post,
@@ -21,16 +22,126 @@ export default function UniversalPost({
 }) {
   const router = useRouter();
 
-  const handleThumbsUpButton = (
+  const [currentUserHasUpvoted, setCurrentUserHasUpvoted] =
+    React.useState<boolean>(false);
+
+  const [currentUserHasDownvoted, setCurrentUserHasDownvoted] =
+    React.useState<boolean>(false);
+
+  useEffect(() => {
+    if (post.users_who_upvoted.includes("anonymus")) {
+      setCurrentUserHasUpvoted(true);
+    }
+    if (post.users_who_downvoted.includes("anonymus")) {
+      setCurrentUserHasDownvoted(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUserHasDownvoted, currentUserHasUpvoted]);
+
+  const handleThumbsUpButton = async (
     e: React.MouseEvent<SVGSVGElement, MouseEvent>
   ) => {
-    console.log("handleThumbsDownButton");
+    if (post) {
+      if (!currentUserHasUpvoted && !currentUserHasDownvoted) {
+        const { error } = await supabase
+          .from("posts")
+          .update({
+            users_who_upvoted: [...post.users_who_upvoted, "anonymus"],
+          })
+          .eq("id", post.id)
+          .select();
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setCurrentUserHasUpvoted(true);
+      } else if (currentUserHasDownvoted) {
+        // remove downvote
+        const { data, error } = await supabase
+          .from("posts")
+          .update({
+            users_who_downvoted: post.users_who_downvoted.filter(
+              (user) => user !== "anonymus"
+            ),
+            users_who_upvoted: [...post.users_who_upvoted, "anonymus"],
+          })
+          .eq("id", post.id);
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setCurrentUserHasDownvoted(false);
+        setCurrentUserHasUpvoted(true);
+      } else if (currentUserHasUpvoted) {
+        // remove upvote
+        const { data: removeUpvoteData, error: removeUpvoteError } =
+          await supabase
+            .from("posts")
+            .update({
+              users_who_upvoted: post.users_who_upvoted.filter(
+                (user) => user !== "anonymus"
+              ),
+            })
+            .eq("id", post.id);
+        if (removeUpvoteError) {
+          return;
+        }
+        setCurrentUserHasUpvoted(false);
+      }
+    }
   };
 
-  const handleThumbsDownButton = (
+  const handleThumbsDownButton = async (
     e: React.MouseEvent<SVGSVGElement, MouseEvent>
   ) => {
-    console.log("handleThumbsDownButton");
+    if (post) {
+      if (!currentUserHasDownvoted && !currentUserHasUpvoted) {
+        const { error } = await supabase
+          .from("posts")
+          .update({
+            users_who_downvoted: [...post.users_who_downvoted, "anonymus"],
+          })
+          .eq("id", post.id);
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setCurrentUserHasDownvoted(true);
+      } else if (currentUserHasUpvoted) {
+        // remove downvote
+        const { error } = await supabase
+          .from("posts")
+          .update({
+            users_who_upvoted: post.users_who_upvoted.filter(
+              (user) => user !== "anonymus"
+            ),
+            users_who_downvoted: [...post.users_who_downvoted, "anonymus"],
+          })
+          .eq("id", post.id)
+          .select();
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setCurrentUserHasUpvoted(false);
+        setCurrentUserHasDownvoted(true);
+      } else if (currentUserHasDownvoted) {
+        // remove upvote
+        const { error } = await supabase
+          .from("posts")
+          .update({
+            users_who_downvoted: post.users_who_downvoted.filter(
+              (user) => user !== "anonymus"
+            ),
+          })
+          .eq("id", post.id);
+        if (error) {
+          console.log(error);
+          return;
+        }
+        setCurrentUserHasDownvoted(false);
+      }
+    }
   };
 
   const handlePostClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -51,7 +162,7 @@ export default function UniversalPost({
         <p className="text-lg font-semibold">{post.title}</p>
         <div className="flex gap-x-4">
           <div className="flex gap-x-1">
-            {false ? (
+            {post.users_who_downvoted.includes("anonymus") ? (
               <HandThumbDownIconSolid
                 onClick={(e) => handleThumbsDownButton(e)}
                 className="text-white w-[24px] h-[24px] cursor-pointer"
@@ -65,7 +176,7 @@ export default function UniversalPost({
             <p>{post.users_who_downvoted.length}</p>
           </div>
           <div className="flex gap-x-1">
-            {false ? (
+            {post.users_who_upvoted.includes("anonymus") ? (
               <HandThumbUpIconSolid
                 onClick={(e) => handleThumbsUpButton(e)}
                 className="text-white w-[24px] h-[24px] cursor-pointer"

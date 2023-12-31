@@ -17,6 +17,7 @@ import {
   HandThumbDownIcon as HandThumbDownIconSolid,
 } from "@heroicons/react/24/solid";
 import { useAuthContext } from "@/components/auth-provider";
+import { useRouter } from "next/navigation";
 
 export default function PostPage() {
   const { postid } = useParams();
@@ -28,6 +29,8 @@ export default function PostPage() {
   const [postComments, setPostComments] = React.useState<
     TComment[] | undefined
   >(undefined);
+
+  const router = useRouter();
 
   const [currentUserHasUpvoted, setCurrentUserHasUpvoted] =
     React.useState<boolean>(false);
@@ -108,6 +111,7 @@ export default function PostPage() {
           return;
         }
         setCurrentUserHasDownvoted(true);
+        post.users_who_downvoted.push("anonymous");
       } else if (currentUserHasUpvoted) {
         // remove downvote
         const { error } = await supabase
@@ -126,6 +130,10 @@ export default function PostPage() {
         }
         setCurrentUserHasUpvoted(false);
         setCurrentUserHasDownvoted(true);
+        post.users_who_downvoted.splice(
+          post.users_who_downvoted.indexOf("anonymous"),
+          1
+        );
       } else if (currentUserHasDownvoted) {
         // remove upvote
         const { error } = await supabase
@@ -141,6 +149,10 @@ export default function PostPage() {
           return;
         }
         setCurrentUserHasDownvoted(false);
+        post.users_who_downvoted.splice(
+          post.users_who_downvoted.indexOf("anonymous"),
+          1
+        );
       }
     }
   };
@@ -160,6 +172,7 @@ export default function PostPage() {
           return;
         }
         setCurrentUserHasUpvoted(true);
+        post.users_who_upvoted.push("anonymous");
       } else if (currentUserHasDownvoted) {
         // remove downvote
         const { data, error } = await supabase
@@ -177,6 +190,10 @@ export default function PostPage() {
         }
         setCurrentUserHasDownvoted(false);
         setCurrentUserHasUpvoted(true);
+        post.users_who_upvoted.splice(
+          post.users_who_upvoted.indexOf("anonymous"),
+          1
+        );
       } else if (currentUserHasUpvoted) {
         // remove upvote
         const { data: removeUpvoteData, error: removeUpvoteError } =
@@ -193,6 +210,10 @@ export default function PostPage() {
           return;
         }
         setCurrentUserHasUpvoted(false);
+        post.users_who_upvoted.splice(
+          post.users_who_upvoted.indexOf("anonymous"),
+          1
+        );
       }
     }
   };
@@ -207,35 +228,41 @@ export default function PostPage() {
               <div className="flex justify-between">
                 <p className="text-2xl font-semibold">{post.title}</p>
                 <div className="flex gap-x-2">
-                  {currentUserHasDownvoted ? (
-                    <HandThumbDownIconSolid
-                      onClick={handleThumbsDownButton}
-                      className="text-white w-[24px] h-[24px] cursor-pointer"
-                    />
-                  ) : (
-                    <HandThumbDownIconOutline
-                      onClick={handleThumbsDownButton}
-                      className="text-white w-[24px] h-[24px] cursor-pointer"
-                    />
-                  )}
-                  {currentUserHasUpvoted ? (
-                    <HandThumbUpIconSolid
-                      onClick={handleThumbsUpButton}
-                      className="text-white w-[24px] h-[24px] cursor-pointer"
-                    />
-                  ) : (
-                    <HandThumbUpIconOutline
-                      onClick={handleThumbsUpButton}
-                      className="text-white w-[24px] h-[24px] cursor-pointer"
-                    />
-                  )}
+                  <div className="flex gap-x-1">
+                    {currentUserHasDownvoted ? (
+                      <HandThumbDownIconSolid
+                        onClick={() => handleThumbsDownButton()}
+                        className="text-white w-[24px] h-[24px] cursor-pointer"
+                      />
+                    ) : (
+                      <HandThumbDownIconOutline
+                        onClick={() => handleThumbsDownButton()}
+                        className="text-white w-[24px] h-[24px] cursor-pointer"
+                      />
+                    )}
+                    <p>{post.users_who_downvoted.length}</p>
+                  </div>
+                  <div className="flex gap-x-1">
+                    {currentUserHasUpvoted ? (
+                      <HandThumbUpIconSolid
+                        onClick={() => handleThumbsUpButton()}
+                        className="text-white w-[24px] h-[24px] cursor-pointer"
+                      />
+                    ) : (
+                      <HandThumbUpIconOutline
+                        onClick={() => handleThumbsUpButton()}
+                        className="text-white w-[24px] h-[24px] cursor-pointer z-50"
+                      />
+                    )}
+                    <p>{post.users_who_upvoted.length}</p>
+                  </div>
                 </div>
               </div>
               <div className="flex justify-between">
                 <p className="text-xs">Author: {post.author_username}</p>
                 <p className="text-xs">Subforum: {post.subforum_name}</p>
               </div>
-              <p>{post.text}</p>
+              <p className="break-words">{post.text}</p>
             </div>
             <div className="px-4 py-4 border border-white rounded shadow-lg flex-col flex gap-y-2">
               {authContext.session?.user?.id && (
